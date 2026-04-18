@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "skill": {
+      "*": "allow",               // 兜底规则：默认允许加载所有技能
+      "pr-review": "allow",       // 精确匹配：允许加载 pr-review 技能
+      "internal-*": "deny",       // Glob 匹配：拒绝加载所有 internal- 开头的技能（对代理完全隐藏）
+      "experimental-*": "ask"     // Glob 匹配：加载 experimental- 开头的技能前需用户确认
+    }
+  }
+}

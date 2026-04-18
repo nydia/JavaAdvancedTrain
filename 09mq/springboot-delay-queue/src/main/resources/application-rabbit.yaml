@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: delay-queue
+  data:
+    redis:
+      host: 127.0.0.1
+      database: 1
+      password: 123456
+      port: 6379
+      timeout: 100000
+      jedis:
+        pool:
+          max-active: 64
+          max-wait: -1
+          max-idle: 24
+          min-idle: 24
+  rabbitmq:
+    host: 127.0.0.1
+    port: 9876
+    username: test
+    password: 123456
+    virtual-host: dev
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry.max-attempts: 5
+        retry.enabled: true
+        retry.initial-interval: 5000000
+        default-requeue-rejected: true
+  cloud:
+    stream:
+      default-binder: rabbit
+      binders:
+        rabbit:
+          type: rabbit
+        rocketmq:
+          type: rocket
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+          auto-create-topic: true
+          namespace: dev
+          access-key: 1
+          secret-key: 1
+      bindings:
+        delay-input:
+          destination: delay-topic
+          group: delay-group
+          consumer:
+            exchange-type: direct
+            durable: true
+        delay-output:
+          destination: delay-topic
+          producer:
+            exchange-type: direct
+      function:
+        definition: delayProcessor
+
+server:
+  port: 8088
+
